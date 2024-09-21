@@ -2,8 +2,6 @@ package com.example.StoreWide.service;
 
 
 import com.example.StoreWide.dto.OrderCartDto;
-import com.example.StoreWide.dto.ProductDto;
-import com.example.StoreWide.dto.ProductListDto;
 import com.example.StoreWide.dto.TransactionDto;
 import com.example.StoreWide.entity.Product;
 import com.example.StoreWide.entity.Transaction;
@@ -27,19 +25,25 @@ public class OrderCartService {
 
     private List<OrderCartDto> orderCart = new ArrayList<>();
 
-    // Add product to the cart
     public GlobalResponse addProductToCart(Long productId, int quantity) {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
 
-            // Check if the product is available
+            // Check if the product already exists in the cart
+            for (OrderCartDto item : orderCart) {
+                if (item.getProduct().getId().equals(productId)) {
+                    return new GlobalResponse("ERROR", "Product already exists, please choose another one", null);
+                }
+            }
+
+            // Check if there is enough stock
             if (product.getQuantity() < quantity) {
                 return new GlobalResponse("ERROR", "Not enough product stock", null);
             }
 
-            // Add to orderCartDTO
+            // Add the product to the cart
             OrderCartDto orderCartDTO = new OrderCartDto(product, quantity, true);
             orderCart.add(orderCartDTO);
 
@@ -49,7 +53,7 @@ public class OrderCartService {
         }
     }
 
-    // Select or deselect product in cart
+
     public GlobalResponse selectProduct(Long productId, boolean isSelected) {
         for (OrderCartDto cartItem : orderCart) {
             if (cartItem.getProduct().getId().equals(productId)) {
@@ -60,7 +64,6 @@ public class OrderCartService {
         return new GlobalResponse("ERROR", "Product not found in cart", null);
     }
 
-    // Get total cart price
     public GlobalResponse getTotalCartPrice() {
 
         double totalPrice = 0.0;
@@ -74,7 +77,7 @@ public class OrderCartService {
         return new GlobalResponse("SUCCESS", "Total price calculated", totalPrice);
     }
 
-    // Place an order
+
     public GlobalResponse placeOrder() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
@@ -107,8 +110,6 @@ public class OrderCartService {
         transaction.setProductQuantities(productQuantities);
         transactionRepository.save(transaction);
         orderCart.clear();
-
-        // Prepare response
         TransactionDto transactionDto = new TransactionDto();
         transactionDto.setTotalAmount(transaction.getTotalAmount());
         transactionDto.setProductQuantities(productQuantities);
@@ -122,7 +123,6 @@ public class OrderCartService {
 
 
     public List<OrderCartDto> getAllCarts() {
-        // Logika untuk mengambil semua item cart
         return orderCart.stream()
                 .map(item -> new OrderCartDto(item.getProduct(), item.getQuantity(), item.isSelected()))
                 .collect(Collectors.toList());

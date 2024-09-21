@@ -15,10 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderCartDto{
 
-    private Product product;      // Reference to the product entity
-    private int quantity;         // Quantity of the product in the cart
-    private boolean selected;     // Whether the product is selected for purchase
+    private Product product;
+    private int quantity;
+    private boolean selected;
 
-    // Since we are not putting business logic in DTO, no total calculation here.
 }
 

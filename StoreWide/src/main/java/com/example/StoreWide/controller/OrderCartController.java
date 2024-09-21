@@ -17,7 +17,6 @@ public class OrderCartController {
     @Autowired
     private OrderCartService orderCartService;
 
-    // Add product to the cart
     @PostMapping("/add/{productId}/{quantity}")
     public ResponseEntity<GlobalResponse> addProductToCart(
             @PathVariable Long productId,
@@ -30,7 +29,6 @@ public class OrderCartController {
         }
     }
 
-    // Select or deselect product in cart
     @PostMapping("/select/{productId}")
     public ResponseEntity<GlobalResponse> selectProduct(
             @PathVariable Long productId,
@@ -43,14 +41,12 @@ public class OrderCartController {
         }
     }
 
-    // Get total cart price
     @GetMapping("/total")
     public ResponseEntity<GlobalResponse> getCartTotal() {
         GlobalResponse response = orderCartService.getTotalCartPrice();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // Place an order
     @PostMapping("/place")
     public ResponseEntity<GlobalResponse> placeOrder() {
         GlobalResponse response = orderCartService.placeOrder();

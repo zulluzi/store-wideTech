@@ -17,15 +17,13 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    // CREATE a new Product
     @PostMapping("/addProduct")
     public ResponseEntity<GlobalResponse> createProduct(@RequestBody Product product) {
         GlobalResponse response = productService.createProduct(product);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // READ a Product by ID
-    @GetMapping("/{id}")
+    @GetMapping("/find/{id}")
     public ResponseEntity<GlobalResponse> getProductById(@PathVariable Long id) {
         GlobalResponse response = productService.getProductById(id);
 
@@ -37,15 +35,14 @@ public class ProductController {
         }
     }
 
-    // READ all Products
-    @GetMapping
+    @GetMapping("/readAll")
     public ResponseEntity<GlobalResponse> getAllProducts() {
         GlobalResponse response = productService.getAllProducts();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // UPDATE an existing Product
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<GlobalResponse> updateProduct(
             @PathVariable Long id,
             @RequestBody Product updatedProduct) {
@@ -58,8 +55,7 @@ public class ProductController {
         }
     }
 
-    // DELETE a Product by ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<GlobalResponse> deleteProduct(@PathVariable Long id) {
         GlobalResponse response = productService.deleteProduct(id);
 

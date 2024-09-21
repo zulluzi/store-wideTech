@@ -20,17 +20,8 @@ public class Product extends BaseEntity{
     private Long id;
 
     private String name;
+    private String type;
     private double price;
-    private int quantity;  // Quantity will be reduced when ordered
-
-    // Other fields like category, description, etc.
-
-    public void reduceQuantity(int orderedQuantity) {
-        if (this.quantity >= orderedQuantity) {
-            this.quantity -= orderedQuantity;
-        } else {
-            throw new RuntimeException("Not enough stock for product: " + name);
-        }
-    }
+    private int quantity;
 
 }

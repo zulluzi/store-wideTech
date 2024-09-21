@@ -16,16 +16,24 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    // CREATE a new Product
     public GlobalResponse createProduct(Product product) {
+        Optional<Product> existingProduct = productRepository.findByNameIgnoreCase(product.getName());
+
+        if (existingProduct.isPresent()) {
+            return new GlobalResponse("ERROR", "Product is exist, please do the update", null);
+        }
+
         Product createdProduct = productRepository.save(product);
+
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         createdProduct.setCreated(timestamp);
+
         productRepository.save(createdProduct);
+
         return new GlobalResponse("SUCCESS", "Product created successfully", createdProduct);
     }
 
-    // READ a single Product by ID
+
     public GlobalResponse getProductById(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
@@ -36,13 +44,11 @@ public class ProductService {
         }
     }
 
-    // READ all Products
     public GlobalResponse getAllProducts() {
         List<Product> products = productRepository.findAll();
         return new GlobalResponse("SUCCESS", "All products retrieved successfully", products);
     }
 
-    // UPDATE an existing Product
     public GlobalResponse updateProduct(Long id, Product updatedProduct) {
         Optional<Product> productOptional = productRepository.findById(id);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -61,7 +67,6 @@ public class ProductService {
         }
     }
 
-    // DELETE a Product by ID
     public GlobalResponse deleteProduct(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
